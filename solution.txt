@@ -9,7 +9,6 @@ WITH agent_stats AS (
     LEFT JOIN bookings b ON ah.AssignmentID = b.AssignmentID
     GROUP BY ah.AgentID
 ),
-
 agent_scores AS (
     SELECT
         a.AgentID,
@@ -26,7 +25,6 @@ agent_scores AS (
             ELSE 0
         END AS ConversionRate,
         CASE WHEN ANY_VALUE(s.CommMatches) > 0 THEN 1 ELSE 0 END AS UsedPreferredComm,
-
         (
             0.4 * ANY_VALUE(ag.AverageCustomerServiceRating) +
             0.3 * CASE WHEN COALESCE(ANY_VALUE(s.TotalAssignments), 0) > 0
@@ -34,13 +32,11 @@ agent_scores AS (
             0.2 * COALESCE(ANY_VALUE(s.DestinationMatches), 0) +
             0.1 * CASE WHEN ANY_VALUE(s.CommMatches) > 0 THEN 1 ELSE 0 END
         ) AS AgentScore
-
     FROM assignment_history a
     JOIN space_travel_agents ag ON a.AgentID = ag.AgentID
     LEFT JOIN agent_stats s ON a.AgentID = s.AgentID
     GROUP BY a.AgentID
 )
-
 SELECT *
 FROM agent_scores
 ORDER BY AgentScore DESC;
