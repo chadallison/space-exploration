@@ -1,0 +1,9 @@
+I aimed to keep it very simple with this model. In an ideal world, I'd have access to far more data and would develop a dynamic way to weigh different factors in the model, but did not do that here.
+
+The first thing I did was get some basic stats for each agent. For each AgentID, I got their total number of assignments, their number of completed bookings, and their number of matches for the given destination, communication method, launch location, and lead source. This required me to join together the assignment_history and bookings tables on AssignmentID.
+
+Next, I joined these stats in an agent_stats CTE with the space_travel_agents table with logic for building a match score to get my final result. I decided to make average customer service rating the most important metric and gave it a weight of 0.3. Next, I considered the conversion rate from assigned booking to completed booking, and gave this a weight of 0.25. Next, I considered the number of matches for that agent's bookings and the given destination and gave it a weight of 0.2. I then considered the number of matches for the given communication source and launch location with respective weights of 0.1. I gave the remaining 0.05 of weighting to the number of lead source matches.
+
+This final result returns a stack-ranked list of travel agents ordered from best to worst. One thing that should be considered is that this weighting is more customer-centric than it is business-centric. If I wanted to be more business-centric, I would have considered additional fields such as the revenue fields in the bookings table. Of course, I did not do that for this analysis, but it did cross my mind and was considered before choosing my approach.
+
+Thank you for taking the time to review my solution!
